@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-decoration: none;
+            font-family: "Microsoft YaHei"
+        }
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height :100vh;
+            background: url(https://w.wallhaven.cc/full/ex/wallhaven-ex9gwo.png) no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .box{
+            position: absolute;
+            width: 350px;
+            height: 400px;
+            background: rgba(0,0,0,0.75);
+            border-radius: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .box::before{
+            content: " ";
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background-image: conic-gradient(transparent,
+            transparent,transparent,#00ccff);
+            animation: animate 4s linear infinite;
+        }
+
+        .box::after{
+            content: " ";
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background-image: conic-gradient(transparent,
+            transparent,transparent,#ff02ee);
+            animation: animate 4s linear infinite;
+            animation-delay: -2s;
+        }
+        @keyframes animate
+        {
+            0%
+            {
+                transform: rotate(0deg);
+            }
+            100%
+            {
+                transform: rotate(360deg);
+            }
+        }
+        .box div{
+            position: absolute;
+            inset: 5px;
+            border-radius: 20px;
+            background: #0c1022;
+            z-index: 1;
+        }
+        p{
+            margin-top: 15px;
+            margin-bottom: 60px;
+            font-size: 42px;
+            font-weight: 600;
+            color: whitesmoke;
+            text-align: center;
+        }
+        .input{
+            width: 80%;
+            height: 40px;
+            margin-bottom: 30px;
+            margin-left: 30px;
+            border: none;
+            border-bottom: 3px solid silver;
+            outline: none;
+            font-size: 18px;
+            border-radius: 20px;
+            padding-left: 8px;
+        }
+        input:focus {
+            border-color: #59c2c5;
+        }
+        .btn {
+            background-color: #59c2c5;
+            width: 38%;
+            height: 48px;
+            border-radius: 8px;
+            font-size: 28px;
+            font-weight: 600;
+            color: rgb(255, 255, 255);
+            padding: 0;
+            margin-left: 105px;
+        }
+        .btn:hover {
+            border-color: rgb(0, 195, 239);
+            cursor: pointer;
+        }
+        span{
+            display: inline-block;
+            width: 100%;
+            margin-top: 20px;
+            color: #59c2c5;
+            text-align: center;
+        }
+        span:hover {
+             text-decoration: underline;
+             cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="background" >
+        <canvas id="canvas"></canvas>
+    </div>
+        <div class="box" >
+            <div>
+                <form action="" class="login" οnsubmit="return false">
+                <p>login</p>
+                    <input type="text" class="input" id="id" placeholder="请输入用户名">
+                    <input type="password" class="input" id="password" placeholder="请输入密码">
+                <input type="button" class="btn" id="btn" value="提交">
+                <br>
+                <span id="zhuce">还未注册？点击注册</span>
+                </form>
+            </div>
+        </div>
+</body>
+<!-- 切换登录和注册 -->
+<script>
+    var id = document.getElementById("id");
+id.addEventListener("focus", function() {
+  id.placeholder = "";
+});
+id.addEventListener("blur", function() {
+  id.placeholder = "请输入用户名";
+});
+    var password = document.getElementById("password");
+password.addEventListener("focus", function() {
+  password.placeholder = "";
+});
+password.addEventListener("blur", function() {
+  password.placeholder = "请输入密码";
+});
+var zhuce=document.getElementById("zhuce")
+zhuce.addEventListener("click",function(){
+    window.location.href="register.html"
+})
+
+// 获取登录id和密码
+var submit=document.getElementById("btn");
+submit.addEventListener("click",function() {
+    console.log("id:" + id.value);
+    console.log("password:" + password.value);
+    //判断id和密码是否输入
+    if(id.value==""){
+        alert("请输入id !");
+    }
+    else if(password.value==""){
+        alert("请输入password !")
+    }
+})
+
+
+</script>
+
+<!-- 粒子特效 -->
+<script>
+    // 设置div背景的宽高
+    var background = document.getElementById("background")
+        background.style.width = innerWidth + 'px'
+        background.style.height = innerHeight + 'px'
+        
+        // 获取canvas对象
+        var  canvas = document.getElementById("canvas")
+        // 获取画笔
+        var ctx = canvas.getContext("2d")
+        
+        // 设置canvas宽高
+        canvas.height = innerHeight
+        canvas.width = innerWidth
+        
+        // 定义一个粒子数组
+        var particlesArray = []
+        // 定义页面内粒子的数量
+        var count = parseInt(canvas.width / 120 * canvas.height / 120)
+        
+        
+        // 定义粒子类
+        class Particle {
+            constructor(x, y) {
+                this.x = x
+                this.y = y
+                // x，y轴的移动速度  -0.5 -- 0.5
+                this.directionX = Math.random() - 0.5
+                this.directionY = Math.random() - 0.5
+            }
+        
+            // 更新点的坐标
+            update() {
+                this.x += this.directionX
+                this.y += this.directionY
+            }
+        
+            // 绘制粒子
+            draw() {
+                ctx.beginPath()
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2)
+                ctx.closePath()
+                ctx.fillStyle = "#0f3b86"
+                ctx.fill()
+            }
+        }
+        
+        // 创建粒子
+        function createParticle() {
+            // 生成一个点的随机坐标
+            var x = Math.random() * innerWidth
+            var y = Math.random() * innerHeight
+        
+            particlesArray.push(new Particle(x, y))
+        }
+        
+        // 处理粒子
+        // 先更新坐标，再绘制出来
+        function handleParticle() {
+            for(var i = 0; i < particlesArray.length; i++) {
+                var particle = particlesArray[i]
+                particle.update()
+                particle.draw()
+                // 超出范围就将这个粒子删除
+                if(particle.x < 0 || particle.x > canvas.width || particle.y < 0 || particle.y > canvas.height) {
+                    particlesArray.splice(i, 1)
+                }
+        
+                // 绘制两个点之间的连线
+                for(var j = i + 1; j < particlesArray.length; j++) {
+                    dx = particlesArray[j].x - particlesArray[i].x
+                    dy = particlesArray[j].y - particlesArray[i].y
+                    dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
+                    if(dist < 100) {
+                        ctx.beginPath()
+                        ctx.strokeStyle = "rgba(255, 255, 255, " + (1 - dist / 100)
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y)
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y)
+                        ctx.closePath()
+                        ctx.lineWidth = 1
+                        ctx.stroke()
+                    }
+                }
+            }
+        }
+        
+        function draw() {
+            // 首先清空画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            // 如果粒子数量小于规定数量，就生成新的粒子
+            if(particlesArray.length < count) {
+                createParticle()
+            }
+        
+            // 处理粒子
+            handleParticle()
+        }
+        
+        // 设置定时器
+        setInterval(draw, 10)
+        
+    </script>
+</html>
